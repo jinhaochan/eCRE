@@ -4,6 +4,7 @@ Personal Notes on eCRE
 ## 1. Registers
 
 ### General Purpose Registers
+---
 
 Capacity: 32 bits / 4 bytes
 
@@ -21,7 +22,10 @@ Capacity: 32 bits / 4 bytes
 
 ![image](https://user-images.githubusercontent.com/7328587/151006738-2a43d608-13a0-46bc-bacf-aaede4e2a9fb.png)
 
+
+
 ### EFLAGS
+---
 
 Information about:
 
@@ -36,6 +40,7 @@ Information about:
 | System Flag  | Involved with operating system operations                                                                                                                                     | Trap flag          |     -                                                                                                                                                                                                                                        |
 
 ### Segment Registers
+---
 
 Segment Registers are 16 bit registers that contain pointers call Segment Selectors that identify different types of segments in memory
 
@@ -54,7 +59,10 @@ To access a particular segment in memory, the appropriate Segment Register must 
 
 Each Segment Register points to a specific type of storage: code, data or stack.
 
+
+
 ### Instruction Pointer Register
+---
 
 EIP, also called the PC, points to the next instruction to be executed.
 
@@ -62,7 +70,10 @@ Everytime an instruction is executed, EIP points to the next one.
 
 EIP cannot be access directly.
 
+
+
 ### Debug Registers
+---
 
 -Hardware BreakPoints = HWBP
 -Software BreakPoints = SWBP
@@ -81,7 +92,10 @@ If a debugger can debug multi-threaded applications, it can update every thread 
 
 SWBP works by substituting the original byte with a `0xCC` byte, or `INT3h`. Since this modifies the code in memory, it always triggers regardless of multi-threaded or not.
 
+
+
 ### Machine Specific Registers
+---
 
 Also called Model Specific Registers, they handle system related functions.
 
@@ -96,9 +110,11 @@ When `RDTSC` is called:
 Time-Stamp Counter is increased by the processor at every clock cycle, and resets to zero when processor is reset
 
 
+
 ## 2. Program Operations
 
 ### Calling Functions
+---
 
 When the program calls a function, the IP jumps to the function's address. However, it needs to know where to return to after the function has completed.
 
@@ -115,6 +131,7 @@ A function exits when `RET` is called:
 
 
 ### The Stack
+---
 
 The manipulation of the Stack is done with `PUSH` and `POP` to modify the Top Of the Stack (TOS). Whenever a `PUSH` or `POP` is called, the ESP decrements to point to the new time on the TOS.
 
@@ -134,6 +151,7 @@ When we exit a function, we need to free up the Stack Frame, and restore ESP and
 
 
 ### Calling Conventions
+---
 
 Calling Conventions refers to the way parameters required by the function are `PUSH` onto the stack
 
@@ -154,22 +172,43 @@ Windows API (Win32 API) uses `__stdcall` Calling Convention
 Examples:
 
 `__stdcall` and `__fastcall` Function Prologue:
+
 ![image](https://user-images.githubusercontent.com/7328587/151105051-96b8b6f8-d133-4d20-b649-6f12171e2155.png)
 
 
 `__stdcall` and `__fastcall` Function Epilogue:
+
 ![image](https://user-images.githubusercontent.com/7328587/151105078-ab6a1605-04ec-45c2-b105-561320a1a796.png)
 
- `__cdecl` Function Prologue:
- ![image](https://user-images.githubusercontent.com/7328587/151105138-1947db81-9a31-4c01-ae74-85c483436162.png)
+`__cdecl` Function Prologue:
+ 
+![image](https://user-images.githubusercontent.com/7328587/151105138-1947db81-9a31-4c01-ae74-85c483436162.png)
 
-  `__cdecl` Function Epilogue:
- ![image](https://user-images.githubusercontent.com/7328587/151105112-b7825dbd-0f4e-4dbe-8f45-d62888a44523.png)
+ `__cdecl` Function Epilogue:
+  
+![image](https://user-images.githubusercontent.com/7328587/151105112-b7825dbd-0f4e-4dbe-8f45-d62888a44523.png)
 
  
+ 
+### Reading the EIP
+---
+
+Since we can't read EIP directly, we can create a function to return EIP to EAX
+
+Move the Return Address to EAX, which is the address of the next instruction, and call `ret`
+
+![image](https://user-images.githubusercontent.com/7328587/151105450-dd0909b6-7b17-43ba-956d-de1e80a4daac.png)
+
+Or
+
+Call next instruction and `POP` the Return Address to EAX
+
+![image](https://user-images.githubusercontent.com/7328587/151105465-1324b9ee-b171-40ee-be3a-345bba59aba5.png)
+
 
 
 ### Processes and Threads
+---
 
 Each thread within a process has its own stack
 
