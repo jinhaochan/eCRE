@@ -296,3 +296,104 @@ Debuggers are either Ring 0 (Kernel mode) or Ring 3 (User mode).
 - Ring 0 (Kernel mode) debuggers are more powerful, and can evade anti-debugging techniques
 - Ring 3 (User mode) debuggers can be detected by anti-debugging techniques
 - Ring 3 (User mode) debuggers can only access memory address that are part of the process we are debugging
+
+## 4. Offsets and PE File Format
+
+### VA/RVA/Offset
+
+Applications do not access physical memory directly, but through virtual addresses
+
+Virtual addresses are deceptively contiguous, but the mapped physical addresses are not
+
+Relative virtual addresses (RVA) is the difference between two VAs, and refers to the higher one.
+
+![image](https://user-images.githubusercontent.com/7328587/151284479-fc986c92-1c51-4963-905d-3b19733a180b.png)
+
+Offsets refer to the physical memory, file on disk, or raw data
+
+Offset is the difference between the locations of 2 bytes
+
+### PE File format
+
+Every PE file starts with a small MS-DOS executable
+
+First bytes of the PE file is called `IMAGE_DOS_HEADER` which contains
+- `e_magic`
+    - 16-bit word which must be 0x5A4D ("MZ")
+    - Called the `IMAGE_DOS_SIGNATURE`
+- `e_lfanew`
+    - At offset 0x3C
+    - Contains file offset of start of the PE header
+    - Called the `IMAGE_NT_HEADERS`
+
+PE Header is formed by combining various structures together (Signature 0x50450000 "PE\0\0" in ASCII)
+
+![image](https://user-images.githubusercontent.com/7328587/151286035-dccffaa4-546a-4792-b055-bdd3bcc24f06.png)
+
+`IMAGE_FILE_HEADER` within `IMAGE_NT_HEADERS`
+
+![image](https://user-images.githubusercontent.com/7328587/151286269-24f88dd7-1013-4a18-9bd7-b003238f048e.png)
+
+`IMAGE_FILE_HEADER` Contains information about the executable
+- Target CPU architecture
+- Number of Sections
+- `SizeOfOptionalHeader` structure, which must be set to 0xE0. This is required, not optional
+- Characteristics about the executable
+
+`IMAGE_OPTIONAL_HEADER` contains:
+- Magic member defining if its 32 bit or 64 bit
+- `AddressOfEntryPoint` holds the RVA of the `EntryPoint` of the module where the first instruction is executed
+- `BaseOfCode` and `BaseOfData` holds the RVA to start of Code and Data sections
+- `ImageBase` contains ImageBase module, which is the preferred VA of the PE file to be loaded in memory
+    - Defaults to 0x00400000 for applications and 0x10000000 for DLLs
+- `SectionAlignment` and `FileAlignment` indicate the alignment of the sections
+- `SizeOfImage` indicates the memory size occupied by the PE at runtime
+    - Has to be multiples of `SectionAlignment` value
+- `DataDirectory` points to the first member of `IMAGE_DATA_DIRECTORY`
+
+
+Each `IMAGE_DATA_DIRECTORY` contains:
+- RVA and size of specific data inside the PE image on runtime
+- Is 16 bytes large
+- `ExportTableAddress`
+- `ImportTableAddress`
+- `ResourceTable`
+- `ImportAddressTable` (IAT)
+
+![image](https://user-images.githubusercontent.com/7328587/151287198-5119a39a-ba38-47b5-a6df-31aeb05a5e0a.png)
+
+
+The section table is an array of `IMAGE_SECTON_HEADER` structures which holds information about associated sections
+- location
+- size
+- charactistics
+- access permissions
+
+- DD = DWORD (32 bits, 4 bytes)
+- DW = WORD (16 bits, 2 bytes)
+- VirtualSize
+    -  Size of section in memory without padding
+-  VirtualAddress
+    -  RVA of the section in memory
+    - VirtualSize + VirtualAddress + Padding = Address of next Section
+- SizeOfRawData
+    - Actual size of section within the file
+- PointerToRawData
+    - Offset where the Raw Data section within the file
+- Chracteristics
+    - Access permissions for the section
+
+Common Sections names:
+- `.text`
+- data: initialized data of the application such as strings
+- .rdata/idata: Used for sections where the import table is located. Also lists the Windows API/DLLs used by the applications
+- .rsrc: resource container section (images etc)
+
+### Memory and File Alignment
+
+Default alignment of sections in a file is 0x200 (SectionAlignment in `IMAGE_OPTIONAL_HEADER`)
+
+Default alignment of memory is 0x1000 (FileAlignment in `IMAGE_OPTIONAL_HEADER`)
+
+0x0 is padded to fulfil the alignment
+
