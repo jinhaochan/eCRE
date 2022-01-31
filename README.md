@@ -397,3 +397,24 @@ Default alignment of memory is 0x1000 (FileAlignment in `IMAGE_OPTIONAL_HEADER`)
 
 0x0 is padded to fulfil the alignment
 
+## 5. String References and Basic Patching
+
+### VA Offset Manual Calculation
+
+If we want to manually find the offset for address 0x00402E77
+
+Given the following IMAGE_SECTION_HEADER:
+
+![image](https://user-images.githubusercontent.com/7328587/151741691-21cdc20a-ba20-4120-aa9c-efd1a6b52d9f.png)
+
+
+0x00400000 is the default Base Image address of Windows executables
+
+`Byte_Offset = Byte_VA - (Image_Base + Section_RVA) + PointerToRawData`
+
+Where:
+- Byte_VA = 0x00402E77
+- Image_Base = 0x400000
+- Section_RVA = 0x1000
+- PointerToRawData = 0x600
+
