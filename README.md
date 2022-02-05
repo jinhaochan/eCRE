@@ -444,4 +444,15 @@ We can patch this instruction via:
 
 ## 6. Exploring the Stack
 
-OllyDbg
+While the program is executing, you can pause the program and explore the variables that were placed on the stack
+
+We find the piece of code that shows the error dialog box, and we "Follow in Disassembler" to find the function that executes this
+
+![image](https://user-images.githubusercontent.com/7328587/152627955-8393058c-ce55-49b3-9977-e49ec598140a.png)
+
+We find the function that calls it, and set a breakpoint at the start of it. When we execute it again and step through it, we see the password being printed
+
+![image](https://user-images.githubusercontent.com/7328587/152628001-c8234039-3b60-4bd0-89d1-c1eccd8b4c0a.png)
+
+
+
