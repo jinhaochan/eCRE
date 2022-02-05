@@ -412,9 +412,36 @@ Given the following IMAGE_SECTION_HEADER:
 
 `Byte_Offset = Byte_VA - (Image_Base + Section_RVA) + PointerToRawData`
 
-Where:
+Where in the `.text` section:
 - Byte_VA = 0x00402E77
 - Image_Base = 0x400000
-- Section_RVA = 0x1000
+- Section_RVA (Section VirtualAddress) = 0x1000
 - PointerToRawData = 0x600
 
+## 5. String References and Basic Patching
+
+Naked functions are functions that do not generate a function prologue or epilogue
+
+### String References
+
+You can search for strings in debuggers, and find their references in the programs
+
+### Basic Memory Patching
+
+`0x00402E76  75  1F  JNZ  00402E97`
+
+0x00402E76 = VA of 75
+
+75 = Opcode for JNZ
+
+1F = number of bytes to skip (0x00402E76 + 2 (for JNZ and 1F) + 1F = 0x00402E97)
+
+We can patch this instruction via:
+1. NOP (Opcode 0x90)
+2. Changing JNZ to JE (Opcode 0x74)
+3. Changing jump value to zero (75 00)
+
+
+## 6. Exploring the Stack
+
+OllyDbg
