@@ -488,3 +488,7 @@ We can use HWBP to monitor when specific data is being accessed.
 
 We can set a HWBP on a memory address of interest, so that when the program eventually calls it, it will break
 
+
+## 8. File Manipulation
+
+
