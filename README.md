@@ -454,5 +454,37 @@ We find the function that calls it, and set a breakpoint at the start of it. Whe
 
 ![image](https://user-images.githubusercontent.com/7328587/152628001-c8234039-3b60-4bd0-89d1-c1eccd8b4c0a.png)
 
+## 6. Algo Reversing
 
+## 7. Windows Registry Manipulation
+
+### Getting Registry Values
+
+`RegOpenKeyEx` = access key in Windows Registry
+
+![image](https://user-images.githubusercontent.com/7328587/152670497-670d1a4a-cbc7-4d13-b0e6-ee03dc303feb.png)
+
+
+`RegQueryValueEx` = obtain value associated with the key
+
+![image](https://user-images.githubusercontent.com/7328587/152670500-555c86b6-2730-416c-943c-60eb14765751.png)
+
+
+On success, the API returns the handle to the key. If failed, the API returns 0
+
+Other Registry Commands:
+- `RegDeleteKey`
+- `RegDeleteValue`
+- `RegGetValue`
+- `RegOpenKey`
+- `RegQueryValue`
+- `RegSetValue`
+- `RegSetValueEx`
+
+
+### Hardware Breakpoints
+
+We can use HWBP to monitor when specific data is being accessed.
+
+We can set a HWBP on a memory address of interest, so that when the program eventually calls it, it will break
 
