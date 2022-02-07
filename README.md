@@ -491,4 +491,22 @@ We can set a HWBP on a memory address of interest, so that when the program even
 
 ## 8. File Manipulation
 
+Reading files can be done via the `CreateFile`  API with the correct parameters passed to it
+
+On success, it will return the handle ot the file. If it fails to open the file, it will return -1 or 0xFFFFFFFFh
+
+![image](https://user-images.githubusercontent.com/7328587/152733459-2553e9f2-771b-4535-9056-13d34b9bb6ae.png)
+
+Getting file paths can be done via the `GetSystemDirectory` API
+
+Getting the size of a file can be done via `GetFileSize` API, which returns the number of bytes in a file.
+
+Other File Manipulation Commands:
+- `WriteFile`
+- `DeleteFile`
+- `MoveFile`
+- `FindfirstFile`
+- `FindNextFile`
+- `CopyFile`
+- `GetFileType`
 
