@@ -510,3 +510,62 @@ Other File Manipulation Commands:
 - `CopyFile`
 - `GetFileType`
 
+## 9. Anti-Debugging Tricks
+
+Ring 3 anti-debugging (userland)
+
+### PEB (Process Envrionemnt Block) - Direct Debugger Detection
+
+Gets information from TEB/PEB
+
+`BeingDebugged` == 1
+
+![image](https://user-images.githubusercontent.com/7328587/152919927-192104f2-9a97-483d-a35c-2dcfd754b2b5.png)
+
+`NtGlobalFlag` == 70h
+
+![image](https://user-images.githubusercontent.com/7328587/152919955-f2b46432-0b63-46d9-bdca-dd8f4ebe0638.png)
+
+### `CheckRemoteDebuggerPresent` - Direct Debugger Detection
+
+Detects if the calling process is being debugged in ring 3. Also checks if another process is being debugged.
+
+Calls `ZwQueryInformationProcess` underneath.
+
+Returns non-zero is there is a debugger
+
+![image](https://user-images.githubusercontent.com/7328587/152920197-63b9bcfa-7d36-4ea5-bbe5-db15db2440d3.png)
+
+### `OutputDebugString` - Indirect Debugger Detection
+
+Sends a string to the debugger itself.
+
+Windows XP returns 1 if it's NOT being debugged, otherwise return an address
+
+Windows Vista and above returns 0 if it's NOT being debugged, otherwise return an address
+
+In Windows XP, call `GetLastError` after `OutputDebugString` will throw an error if a NO debugger is present. If EAX == 0, then a debugger IS present.
+
+In Windows XP and above, call `SEH` after `OutputDebugString` will throw an error if a NO debugger is present. If EAX == 0, then a debugger IS present.
+
+An error is thrown after calling `GetLastError` or `SEH` because if `OutputDebugString` returns 1 or 0, `GetLastError` and `SEH` will try to access it, but those are not valid addresses to access.
+
+### olly specific crash - Indirect Debugger Detection
+
+Sending `%s%s%s` to olly will crash the debugger
+
+### `OpenProcess` - Indirect Debugger Detection
+
+The debugee usually would not have privileges enabled, and cannot open system processes e.g. services.exe
+
+If the debugee is able to open system process, it probably has it's privileges escalated by a debugger
+
+### `FindWindow` / `EnumWindows`  - Indirect Debugger Detection
+
+We can get the window name of the running process by calling `FindWindow`. e.g. if running Ollydbg.exe, `Ollydbg` will be returned
+
+We compare the window name with a typical debugger names
+
+![image](https://user-images.githubusercontent.com/7328587/152921412-29723ccc-1484-4f2a-b1dc-5aa3e6acdf77.png)
+
+`EnumWindows` can be called to find the name of all open windows instead
