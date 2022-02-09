@@ -110,6 +110,9 @@ When `RDTSC` is called:
 Time-Stamp Counter is increased by the processor at every clock cycle, and resets to zero when processor is reset
 
 
+### Tips
+
+Within a function, if accessing `EBP - x`, it is a local variable within the function. If accessing `EBP + x`, its either a parameter or a global variable.
 
 ## 2. Program Operations
 
