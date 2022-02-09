@@ -1,6 +1,12 @@
 # eCRE
 Personal Notes on eCRE
 
+
+## Tips
+
+- Within a function, if accessing `EBP - x`, it is a local variable within the function. If accessing `EBP + x`, its either a parameter or a global variable.
+- To remove items from the stack, you can change the `RET` value. e.g. `RET 4` remove 1 item from the stack
+
 ## 1. Registers
 
 ### General Purpose Registers
@@ -71,7 +77,6 @@ Everytime an instruction is executed, EIP points to the next one.
 EIP cannot be access directly.
 
 
-
 ### Debug Registers
 ---
 
@@ -110,9 +115,6 @@ When `RDTSC` is called:
 Time-Stamp Counter is increased by the processor at every clock cycle, and resets to zero when processor is reset
 
 
-### Tips
-
-Within a function, if accessing `EBP - x`, it is a local variable within the function. If accessing `EBP + x`, its either a parameter or a global variable.
 
 ## 2. Program Operations
 
