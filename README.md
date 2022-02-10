@@ -634,3 +634,48 @@ There are various ways to get time:
 - `QueryPerformanceCounter`
 - etc.
 
+
+### Words about Breakpoints
+
+A Software Breakpoint (SWBP) is placed by substituting the byte originally located at the memory address by a software interrrupt `INT 3h`, or opcode `0xCC`
+
+When the EIP reaches that memory address, it executes `INT 3h` which raises a SWBP exception (0x800000003h). If the process is being debugged, the debugger will stop the execution at that memory address.
+
+SWBP however only works on the code under execution, not for memory access, which is done by Hardware Breakpoints (HWBP) (HWBP can alos be set on running code)
+
+You can put unlimited SWBP. It is not possible to have more than 4 HWBP per thread at the same time, Since there are only 4 registers to keep track of them DR0-DR3
+
+SWBP modifies the code, while HWBP does not modify any code, which can be helpful for anti-debugging)
+
+
+### Presence of Software Breakpoints
+
+![image](https://user-images.githubusercontent.com/7328587/153375914-7f79b8fd-634f-49ef-a4c9-0702aca71744.png)
+
+
+### Presence of Hardware Breakpoints
+
+- `OpenThread` to a handle of a thread
+- `GetThreadContext` to read the thread context, and inspect DR0-DR3 for any HWBP stored
+
+OR
+
+- Generate an exception
+- Inside the exception handler, find the context record location from ESP + 0x0C
+- Check values of DR0-DR3
+
+Values inside DR0-DR3 will be 0 if no HWBP are set
+
+
+### Ring0 Debuggers and System Monitoring Tools Detection
+
+Call `CreateFile` API to try and open handles to:
+- `\\.\NTICE` -> Softice software
+- `\\.\FILEM` -> FileMon software
+- `\\.REGSYS` -> RegMon software
+
+If valid handles are obtained, it means that these programs are running
+
+
+### Structured Exception Handling (SEH)
+
