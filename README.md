@@ -519,6 +519,7 @@ Other File Manipulation Commands:
 
 Ring 3 anti-debugging (userland)
 
+
 ### PEB (Process Envrionemnt Block) - Direct Debugger Detection
 
 Gets information from TEB/PEB
@@ -531,6 +532,7 @@ Gets information from TEB/PEB
 
 ![image](https://user-images.githubusercontent.com/7328587/152919955-f2b46432-0b63-46d9-bdca-dd8f4ebe0638.png)
 
+
 ### `CheckRemoteDebuggerPresent` - Direct Debugger Detection
 
 Detects if the calling process is being debugged in ring 3. Also checks if another process is being debugged.
@@ -540,6 +542,7 @@ Calls `ZwQueryInformationProcess` underneath.
 Returns non-zero is there is a debugger
 
 ![image](https://user-images.githubusercontent.com/7328587/152920197-63b9bcfa-7d36-4ea5-bbe5-db15db2440d3.png)
+
 
 ### `OutputDebugString` - Indirect Debugger Detection
 
@@ -555,6 +558,7 @@ In Windows XP and above, call `SEH` after `OutputDebugString` will throw an erro
 
 An error is thrown after calling `GetLastError` or `SEH` because if `OutputDebugString` returns 1 or 0, `GetLastError` and `SEH` will try to access it, but those are not valid addresses to access.
 
+
 ### olly specific crash - Indirect Debugger Detection
 
 Sending `%s%s%s` to olly will crash the debugger
@@ -565,7 +569,8 @@ The debugee usually would not have privileges enabled, and cannot open system pr
 
 If the debugee is able to open system process, it probably has it's privileges escalated by a debugger
 
-### `FindWindow` / `EnumWindows`  - Indirect Debugger Detection
+
+### `FindWindow` / `EnumWindows` - Indirect Debugger Detection
 
 We can get the window name of the running process by calling `FindWindow`. e.g. if running Ollydbg.exe, `Ollydbg` will be returned
 
@@ -574,3 +579,58 @@ We compare the window name with a typical debugger names
 ![image](https://user-images.githubusercontent.com/7328587/152921412-29723ccc-1484-4f2a-b1dc-5aa3e6acdf77.png)
 
 `EnumWindows` can be called to find the name of all open windows instead
+
+
+### Process Debugger Detection - Indirect Debugger Detection
+
+Inspect the names of all running processes
+
+`CreateToolhelp32SnapShot` creates a snapshot of all running processing using `TH32CS_SNAPPROCESS` flag
+
+`Process32First` obtains information about the first process of the snapshot
+
+`Process32Next` iterates through the processes in the snapshot
+
+![image](https://user-images.githubusercontent.com/7328587/153365188-ea6027d0-e28a-4255-8c30-4a72e72b14b2.png)
+
+
+### Parent Process Detection - Indirect Debugger Detection
+
+A process opened "normally" will have `explorer.exe` as it's parent process
+
+A process opened in a debugger will have the debugger name as it's parent process
+
+- Obtain PID of the malware
+- `CreateToolhelp32SnapShot` with `TH32CS_SNAPPROCESS` flag and `Process32Next` to iterate through all processes
+- Find the PID == malware
+- Find the Parent PID
+- Iterate again through all processes, and check if PPID == `explorer.exe`
+
+The malware could check for multiple `explorer.exe` or checking the parent of `explorer.exe` to check if it's the spoofed.
+
+
+### Module Debugger Detection
+
+`CreateToolhelp32SnapShot` creates a snapshot of all loaded modules of a specific process using `TH32CS_SNAPMODULE` flag
+
+`Module32First` obtains first module in the process
+
+`Module32Next` iterates through the modules in the process
+
+- `CreateToolHelp32SnapShot` with `TH32CS_SNAPPROCESS` flag and `Process32Next` to iterate through all processes
+- `CreateToolHelp32SnapShot` with `TH32CS_SNAPMODULE` flag and `Module32Next` to iterate through all modules in the process
+
+![image](https://user-images.githubusercontent.com/7328587/153366791-3eebe13f-4935-4cf1-a076-d7c379bb653d.png)
+
+
+### Execution Time Detection
+
+Evaluate time taken to complete the execution of code
+
+There are various ways to get time:
+- `RDTSC` to read time stamp counter
+- `GetTickCount`
+- `timeGetTime`
+- `QueryPerformanceCounter`
+- etc.
+
