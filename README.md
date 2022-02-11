@@ -707,3 +707,39 @@ Uses a specific Exception Handler `UnhandledExceptionFilterAPI`, which is normal
 If the process is being debugged, after called `UnhandledExceptionFilterAPI`, the process will exit inside of continuing
 
 `UnhandledExceptionFilterAPI` calls `ZwQueryInformationProcessAPI` asking for `ProcessDebugPort` information, which will return `0xFFFFFFFF` or a non-zero value if the process is being debugged by a Ring 3 debugger, and returns `0x0` if it's not being debugged.
+
+We can force `UnhandledExceptionFilterAPI` to always return 0x0 in order for `SetUnhandledExceptionFilterAPI` to be called which transfers execution to the custom exception handler
+
+
+### VM Detection
+
+VMWARE
+
+1. Places `VMXh` which is a the magic number for VMware into EAX
+2. Prepares the function for getting VMware version `mov ecx 0Ah`
+3. Prepares the port to communicate with VMware `mov edx 5658h`
+4. Calls the function, which if VMware is running, it will return the magic number == EAX
+
+Usually, `in eax dx` is a privileged instruction, and can only be executed in Ring 0, not Ring 3
+
+However, the virtual CPU will allow the instruction will run inside a virtual machine
+
+This trick requires an Exception Handler, as if the application is not running in a VM, it will raise an exception `0xC0000096h`
+
+![image](https://user-images.githubusercontent.com/7328587/153620566-e22cac03-0545-4297-b2b5-5fc1ee30b43f.png)
+
+
+VIRTUALPC
+
+VirtualPC can decode `db 0Fh 3Fh 7 0Bh` which are unqiue instructions
+
+If the application is NOT running in VirutalPC VM, it will raise an exception
+
+![image](https://user-images.githubusercontent.com/7328587/153621893-934fca56-fd9b-4b92-8f72-c3819756d276.png)
+
+
+VIRTUALBOX
+
+VirtualBox can be easily detected through the Window Class Name of a tray icon that it place in the task bar.
+
+![image](https://user-images.githubusercontent.com/7328587/153622162-31794a4a-dace-42f7-b186-c6dcf2179759.png)
