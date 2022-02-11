@@ -532,6 +532,10 @@ Gets information from TEB/PEB
 
 ![image](https://user-images.githubusercontent.com/7328587/152919955-f2b46432-0b63-46d9-bdca-dd8f4ebe0638.png)
 
+This information is stored in `FS[30]` at various offsets, where the address of FS is here:
+
+![image](https://user-images.githubusercontent.com/7328587/153549148-005a993f-25b5-480e-9ed1-c80119899909.png)
+
 
 ### `CheckRemoteDebuggerPresent` - Direct Debugger Detection
 
