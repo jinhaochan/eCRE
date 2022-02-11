@@ -683,3 +683,27 @@ If valid handles are obtained, it means that these programs are running
 
 ### Structured Exception Handling (SEH)
 
+Debugger Detection through Exception Generation
+
+Can also be used for redirecting execution flow
+
+`INT 3h` is set to indicate a SWBP. If a debugger is running, it will handle the exception, and set the EIP to the next instruction `move eax 1`
+
+If no debugger is present, `_exception_handler` will handle it.
+
+This means that if no debugger is present, we go to `xor eax eax`. If a debugger is present, we go to `mov eax 1`.
+
+By evaluating `eax`, if it has a value of 1, a debugger is present. If it has a value of 0, no debugger is present.
+
+![image](https://user-images.githubusercontent.com/7328587/153610675-d8a612fe-497f-4672-90ff-5f3bc541bf25.png)
+
+Besides `INT 3h`, `DebugBreak` can also be used 
+
+
+### Unhandled Exception Filter
+
+Uses a specific Exception Handler `UnhandledExceptionFilterAPI`, which is normally used when there are no appropriate handlers to handle the exception
+
+If the process is being debugged, after called `UnhandledExceptionFilterAPI`, the process will exit inside of continuing
+
+`UnhandledExceptionFilterAPI` calls `ZwQueryInformationProcessAPI` asking for `ProcessDebugPort` information, which will return `0xFFFFFFFF` or a non-zero value if the process is being debugged by a Ring 3 debugger, and returns `0x0` if it's not being debugged.
