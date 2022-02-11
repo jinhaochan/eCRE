@@ -6,6 +6,7 @@ Personal Notes on eCRE
 
 - Within a function, if accessing `EBP - x`, it is a local variable within the function. If accessing `EBP + x`, its either a parameter or a global variable.
 - To remove items from the stack, you can change the `RET` value. e.g. `RET 4` remove 1 item from the stack
+- Find Expression `TerminateProcess`, and set SWBP there. You can then see what were the function calls before terminate process was called.
 
 ## 1. Registers
 
