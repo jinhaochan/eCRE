@@ -524,11 +524,11 @@ Ring 3 anti-debugging (userland)
 
 Gets information from TEB/PEB
 
-`BeingDebugged` == 1
+`BeingDebugged` == 1 (Change EAX to 0 to bypass)
 
 ![image](https://user-images.githubusercontent.com/7328587/152919927-192104f2-9a97-483d-a35c-2dcfd754b2b5.png)
 
-`NtGlobalFlag` == 70h
+`NtGlobalFlag` == 70h (You can't just change this to 0, as it will fail too. Have to change to another other int e.g. 123)
 
 ![image](https://user-images.githubusercontent.com/7328587/152919955-f2b46432-0b63-46d9-bdca-dd8f4ebe0638.png)
 
