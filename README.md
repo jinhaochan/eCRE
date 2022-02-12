@@ -7,6 +7,7 @@ Personal Notes on eCRE
 - Within a function, if accessing `EBP - x`, it is a local variable within the function. If accessing `EBP + x`, its either a parameter or a global variable.
 - To remove items from the stack, you can change the `RET` value. e.g. `RET 4` remove 1 item from the stack
 - Find Expression `TerminateProcess`, and set SWBP there. You can then see what were the function calls before terminate process was called.
+- `cmp eax ebx` does a subtraction of `eax` and `ebx`, while `test eax ebx` does a logical AND between `eax` and `ebx`
 
 ## 1. Registers
 
@@ -460,9 +461,9 @@ We find the function that calls it, and set a breakpoint at the start of it. Whe
 
 ![image](https://user-images.githubusercontent.com/7328587/152628001-c8234039-3b60-4bd0-89d1-c1eccd8b4c0a.png)
 
-## 6. Algo Reversing
+## 7. Algo Reversing
 
-## 7. Windows Registry Manipulation
+## 8. Windows Registry Manipulation
 
 ### Getting Registry Values
 
@@ -495,7 +496,7 @@ We can use HWBP to monitor when specific data is being accessed.
 We can set a HWBP on a memory address of interest, so that when the program eventually calls it, it will break
 
 
-## 8. File Manipulation
+## 9. File Manipulation
 
 Reading files can be done via the `CreateFile`  API with the correct parameters passed to it
 
@@ -516,7 +517,7 @@ Other File Manipulation Commands:
 - `CopyFile`
 - `GetFileType`
 
-## 9. Anti-Debugging Tricks
+## 10. Anti-Debugging Tricks
 
 Ring 3 anti-debugging (userland)
 
@@ -529,7 +530,7 @@ Gets information from TEB/PEB
 
 ![image](https://user-images.githubusercontent.com/7328587/152919927-192104f2-9a97-483d-a35c-2dcfd754b2b5.png)
 
-`NtGlobalFlag` == 70h (You can't just change this to 0, as it will fail too. Have to change to another other int e.g. 123)
+`NtGlobalFlag` == 70h
 
 ![image](https://user-images.githubusercontent.com/7328587/152919955-f2b46432-0b63-46d9-bdca-dd8f4ebe0638.png)
 
@@ -744,3 +745,64 @@ VIRTUALBOX
 VirtualBox can be easily detected through the Window Class Name of a tray icon that it place in the task bar.
 
 ![image](https://user-images.githubusercontent.com/7328587/153622162-31794a4a-dace-42f7-b186-c6dcf2179759.png)
+
+
+## 11. Code Obfuscation
+
+Obfuscated code needs to be "Cleaned"
+
+### Logic Flow Obfuscation
+
+By inserting plenty of `jne`, `jl` `jg` etc, it acts like a bunch of if-else statments that make the flow confusing
+
+Straight forward code can also be convoluted.
+
+Switching between `cmp` and `test`, where `cmp` does a subtraction while `test` does a AND operation
+
+### NOP obfuscation
+
+Not just putting in NOPs, but combining operations that when put together, has no effect on the program
+
+![image](https://user-images.githubusercontent.com/7328587/153697267-1445126a-5fab-4d7a-9b34-0536b82fbeb6.png)
+
+### Anti-Disassembler Code Obfuscation
+
+Inserts junk bytes between instructions such at the disassembler interprets them and displays incorrect instructions
+
+![image](https://user-images.githubusercontent.com/7328587/153697451-45ac1cdd-71b6-4dad-a10f-a53e66e5bde2.png)
+
+
+After junk bytes are added in RED. `jmp` instructions are used to keep the code functional by jumping to the correct address offset
+
+![image](https://user-images.githubusercontent.com/7328587/153697465-a173c918-069d-450f-85e8-cce8a0ad536f.png)
+
+### Trampolines
+
+Places code at random places instead of one after the other, uses unconditional `jmp` to make things messy
+
+### Instruction Permutations
+
+Substitutes simple instructions with others that have the same meaning
+
+```
+xor eax eax
+
+becomes
+
+push EAX
+sub ESP EAX
+pop EAX
+
+
+
+mov eax ebx
+
+becomes
+
+push edx
+xor edx edx
+xor edx ebx
+push edx
+pop eax
+pop edx
+```
