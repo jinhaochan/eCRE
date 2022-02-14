@@ -806,3 +806,59 @@ push edx
 pop eax
 pop edx
 ```
+
+
+
+## 12. Packed Binaries
+
+Retriving the original executable code that runs independently from layers of code that were added by the packer
+
+Packers compress, encrypt and obfuscate the orignal code
+
+### Well Known Entry Points
+
+To get the orignal executable, we need to find the Original Entry Point (OEP)
+
+This is the first line of code to be executed when the process is created by the Windows Loader
+
+Example Entry Points:
+
+![image](https://user-images.githubusercontent.com/7328587/153811565-18a6827d-24c4-4424-bc65-bb18e927818d.png)
+
+![image](https://user-images.githubusercontent.com/7328587/153811588-7f5fb55b-3003-49f1-adfc-9dc1b7d1b484.png)
+
+![image](https://user-images.githubusercontent.com/7328587/153811614-cfd6e22c-8e18-4cb6-8ecc-8969c2bd686e.png)
+
+### Methods to reach OEP
+
+1. Instructions like these could be jumping to the OEP:
+- `jmp eax`
+- `call ebx`
+- `jmp/call ds:[031320]`
+- `jmp/call ds:[eax]`
+
+2. Look out for loops of XORing, which could be deobfuscating the original code
+
+3. The ESP Trick
+
+![image](https://user-images.githubusercontent.com/7328587/153812566-ad5796b2-041d-4dc8-b6b9-a4b2e030a8af.png)
+
+4. Jump to OEP. Some packers save register values before doing the packing. They then restore the register values and enter the OEP. By tracking `PUSHAD` and `POPAD`, we can determine where the packing starts and ends
+
+5. Packers can make use of exceptions to change the flow of the program. We can monitor and follow the SEH to see where the program flows to
+
+6. Exception Counting. Some packers only run the program after x number of exceptions has been triggered
+
+7. Stack Trace-Back. By looking at what functions were called, we can try to deduce where address the OEP is
+
+### Packers and Tools being used
+
+To perform unpacking, we need plugins to Olly
+
+Some common packers are:
+- UPX
+- WinUpack
+- ASPack
+- PECompact
+- FSG
+
