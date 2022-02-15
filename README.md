@@ -837,7 +837,22 @@ Example Entry Points:
 - `jmp/call ds:[031320]`
 - `jmp/call ds:[eax]`
 
-2. Look out for loops of XORing, which could be deobfuscating the original code
+2. Look out for loops of XORing, which could be deobfuscating the original code (See WinUpack)
+
+Click on Memory, select the PE header for the binary and "Dump in CPU"
+
+![image](https://user-images.githubusercontent.com/7328587/154016234-7a882e00-e325-4d2e-a47f-de32400e550a.png)
+
+Get the AddressOfEntryPoint
+
+![image](https://user-images.githubusercontent.com/7328587/154016388-324e9522-3f5a-4987-97f5-14f2795fc3f3.png)
+
+Navigate to the entry point of the packer at 400000 + AddressOfEntryPoint and set a breakpoint there. In this case, its 400000 + 1018 = 401018
+
+![image](https://user-images.githubusercontent.com/7328587/154016599-04af4fb5-374c-47af-8005-d318badd9b0a.png)
+
+Step through the code, and skip past any loops by setting a breakpoint after the loop
+
 
 3. Some packers save register values before doing the packing. They then restore the register values and enter the OEP. By tracking `PUSHAD` and `POPAD`, we can determine where the packing starts and ends (See ASPack)
 
