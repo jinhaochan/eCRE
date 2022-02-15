@@ -839,11 +839,7 @@ Example Entry Points:
 
 2. Look out for loops of XORing, which could be deobfuscating the original code
 
-3. The ESP Trick
-
-![image](https://user-images.githubusercontent.com/7328587/153812566-ad5796b2-041d-4dc8-b6b9-a4b2e030a8af.png)
-
-4. Some packers save register values before doing the packing. They then restore the register values and enter the OEP. By tracking `PUSHAD` and `POPAD`, we can determine where the packing starts and ends (See ASPack)
+3. Some packers save register values before doing the packing. They then restore the register values and enter the OEP. By tracking `PUSHAD` and `POPAD`, we can determine where the packing starts and ends (See ASPack)
 
 Set a breakpoint on POPAD, and continue execution from there
 
@@ -852,7 +848,7 @@ Set a breakpoint on POPAD, and continue execution from there
 ![image](https://user-images.githubusercontent.com/7328587/154001725-83fb2782-ae50-4f2e-8475-bba0ae465f5e.png)
 
 
-5. Packers can make use of exceptions to change the flow of the program. We can monitor and follow the SEH to see where the program flows to (See PeCompact)
+4. Packers can make use of exceptions to change the flow of the program. We can monitor and follow the SEH to see where the program flows to (See PeCompact)
 
 Memory Access Violation
 
@@ -867,9 +863,9 @@ In the SEH, scroll down and set a Hardware Breakpoint on execution on the `jmp` 
 ![image](https://user-images.githubusercontent.com/7328587/154002109-a623cea1-c4c6-4945-8721-0930dccff419.png)
 
 
-6. Exception Counting. Some packers only run the program after x number of exceptions has been triggered
+5. Exception Counting. Some packers only run the program after x number of exceptions has been triggered
 
-7. Stack Trace-Back. By looking at what functions were called, we can try to deduce where address the OEP is
+6. Stack Trace-Back. By looking at what functions were called, we can try to deduce where address the OEP is
 
 ### Packers and Tools being used
 
