@@ -893,11 +893,11 @@ Some common packers are:
 - PECompact
 - FSG
 
-### Extract UPX in Olly
+### Extract packed programs in Olly
 
 - After entering the packed program, use OllyDump plugin to dump the application to `dumped.exe`
 - Use Import REConstructor attached to the original program and view the entry point of the packed program (first 5 bytes of address) to extract the IAT and get imports
-- After getting the IAT and imports, click `Fix Dump` and select `dumped.exe` to patch the IAT of t `dumped.exe`
+- After getting the IAT and imports, click `Fix Dump` and select `dumped.exe` to patch the IAT of `dumped.exe`
 - Within the Debugger, you can view the memory address of the IAT, and click `Long-> Address with ASCII dump`
 
 ![image](https://user-images.githubusercontent.com/7328587/153826234-d2731f7b-8d28-4bd7-b1f4-a7dd261c65e3.png)
