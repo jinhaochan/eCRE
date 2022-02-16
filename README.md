@@ -9,6 +9,7 @@ Personal Notes on eCRE
 - Find Expression `TerminateProcess`, and set SWBP there. You can then see what were the function calls before terminate process was called.
 - `cmp eax ebx` does a subtraction of `eax` and `ebx`, while `test eax ebx` does a logical AND between `eax` and `ebx`
 - Set a breakpoint on `GetProcAddress` to see what is getting the address of processes. Could be used for IAT protection using relative addressing.
+- Set a breakpoint on `CreateThread` or `CreateRemoteThread` and look at the previous stack frame to see what is spawning threads.
 
 ## 1. Registers
 
