@@ -10,6 +10,13 @@ Personal Notes on eCRE
 - `cmp eax ebx` does a subtraction of `eax` and `ebx`, while `test eax ebx` does a logical AND between `eax` and `ebx`
 - Set a breakpoint on `GetProcAddress` to see what is getting the address of processes. Could be used for IAT protection using relative addressing.
 - Set a breakpoint on `CreateThread` or `CreateRemoteThread` and look at the previous stack frame to see what is spawning threads.
+- You can create your own exit prologue by modifying the end of the function to be
+
+```
+mov esp ebp (Restore ESP)
+pop ebp (Restore callers EBP)
+ret (return to address in EIP)
+```
 
 ## 1. Registers
 
@@ -956,3 +963,5 @@ Context of the threads may have changed after accessing them, so we need to susp
 ### Debugging Multi-Threaded Applications
 
 We can turn a multi-threaded application to a single threaded one
+
+By replacing the `CreateThread` API call with `call <func>`, the function will be executed in the same thread again
