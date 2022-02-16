@@ -911,3 +911,29 @@ Some common packers are:
 - Within the Debugger, you can view the memory address of the IAT, and click `Long-> Address with ASCII dump`
 
 ![image](https://user-images.githubusercontent.com/7328587/153826234-d2731f7b-8d28-4bd7-b1f4-a7dd261c65e3.png)
+
+
+## 13. Debugging Multi-Threaded Applications
+
+Applications that can execute different blocks of code in different threads
+
+### Creating Threads
+
+Creating threads are done by:
+1. `CreateThread` --> creates thread within virtual address of calling process. Returns handle to thread
+2. `CreateRemoteThread` --> creates thread inside virtual address of another process. Returns handle to thread
+3. `CreateRemoteThreadEx` --> creates thread inside virtual address of another process. Returns handle to thread
+
+Wrapper around `CreateThread`:
+1. `_beginthread`
+2. `beginthreadex`
+
+### Thread Synchronization
+
+Threads can be synchronized with:
+1. `WaitForSingleObject`
+2. `WaitForMultipleObjects`
+
+These puts the calling thread in a "wait" state until the specified "Objects" has finished running or terminated
+
+The specified handles need to have `SYNCRHONIZE` access rights
