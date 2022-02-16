@@ -256,7 +256,7 @@ Handles are references to various resources, and is used by the operating system
 
 Exceptions occurs during the execution of an application, and are associated with specific Exception Handlers. which are blocks of code to handle the specific exception
 
-There are two types os Exceptions:
+There are two types of Exceptions:
 - Hardware
     -  Caused by execution of bad sequence of instructions, such as division by zero, or accessing invalid memory
     -  HW Exceptions are initiated by the CPU
