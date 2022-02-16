@@ -70,7 +70,7 @@ Information about:
 ### Segment Registers
 ---
 
-Segment Registers are 16 bit registers that contain pointers call Segment Selectors that identify different types of segments in memory
+Segment Registers are 16 bit registers that contain pointers called Segment Selectors that identify different types of segments in memory
 
 To access a particular segment in memory, the appropriate Segment Register must contain the correct Segment Selector
 
