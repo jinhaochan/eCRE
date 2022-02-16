@@ -15,7 +15,12 @@ Personal Notes on eCRE
 ```
 mov esp ebp (Restore ESP)
 pop ebp (Restore callers EBP)
-ret (return to address in EIP)
+ret (Return to address in EIP)
+
+...
+
+add esp 8 (Rebalancing the stack)
+
 ```
 
 ## 1. Registers
