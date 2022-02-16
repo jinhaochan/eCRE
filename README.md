@@ -209,13 +209,13 @@ Examples:
 
 `__cdecl` Function Prologue:
  
-![image](https://user-images.githubusercontent.com/7328587/151105138-1947db81-9a31-4c01-ae74-85c483436162.png)
-
- `__cdecl` Function Epilogue:
-  
 ![image](https://user-images.githubusercontent.com/7328587/151105112-b7825dbd-0f4e-4dbe-8f45-d62888a44523.png)
 
+ `__cdecl` Function Epilogue:
  
+![image](https://user-images.githubusercontent.com/7328587/151105138-1947db81-9a31-4c01-ae74-85c483436162.png)
+  
+  
  
 ### Reading the EIP
 ---
@@ -226,7 +226,7 @@ Move the Return Address to EAX, which is the address of the next instruction, an
 
 ![image](https://user-images.githubusercontent.com/7328587/151105450-dd0909b6-7b17-43ba-956d-de1e80a4daac.png)
 
-Or
+Then
 
 Call next instruction and `POP` the Return Address to EAX
 
