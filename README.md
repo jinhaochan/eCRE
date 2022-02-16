@@ -925,8 +925,8 @@ Creating threads are done by:
 3. `CreateRemoteThreadEx` --> creates thread inside virtual address of another process. Returns handle to thread
 
 Wrapper around `CreateThread`:
-1. `_beginthread`
-2. `beginthreadex`
+1. `_beginthread` --> should not be used for thread synchronization, as the handle generated might not be valid if it terminates very quickly. Other APIs are responsible for closing the handle, hence the return value is guaranteed to be valid
+2. `_beginthreadex`
 
 ### Thread Synchronization
 
@@ -937,3 +937,21 @@ Threads can be synchronized with:
 These puts the calling thread in a "wait" state until the specified "Objects" has finished running or terminated
 
 The specified handles need to have `SYNCRHONIZE` access rights
+
+### Thread Manipulation
+
+Threads can be created to run immediately, or suspended (`CREATE_SUSPENDED`), until `ResumeThread` is called
+
+`SuspendThread` suspends a thread, `TerminateThread` or `_endthreadex` (only if `_beginthreadex` was used) kills a thread
+
+Threads can get information (CPU State) from other Threads using `GetThreadContext` with `THREAD_GET_CONTEXT` permissions enabled
+
+Threads can perform changes to other Threads using `SetThreadContext` with `THREAD_SET_CONTEXT` permissions enabled
+
+Usually both `THREAD_GET_CONTEXT` and `THREAD_SET_CONTEXT` are required
+
+Context of the threads may have changed after accessing them, so we need to suspend the thread first before reading/modifying it by calling `THREAD_SUSPEND_RESUME`
+
+### Debugging Multi-Threaded Applications
+
+We can turn a multi-threaded application to a single threaded one
