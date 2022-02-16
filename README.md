@@ -102,8 +102,8 @@ EIP cannot be access directly.
 ### Debug Registers
 ---
 
--Hardware BreakPoints = HWBP
--Software BreakPoints = SWBP
+- Hardware BreakPoints = HWBP
+- Software BreakPoints = SWBP
 
 There are 8 debug registers `DR0 - DR7` used to control debug operations of the processor
 
