@@ -13,6 +13,12 @@ Personal Notes on eCRE
 - You can create your own exit prologue by modifying the end of the function to be
 
 ```
+push ebp (Push EBP of the caller on the stack)
+mov ebp, esp (Set the EBP of the function to be the current ESP)
+sub esp, 12 (Allocate memory for the function)
+
+...
+
 mov esp ebp (Restore ESP)
 pop ebp (Restore callers EBP)
 ret (Return to address in EIP)
