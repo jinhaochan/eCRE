@@ -8,6 +8,7 @@ Personal Notes on eCRE
 - To remove items from the stack, you can change the `RET` value. e.g. `RET 4` remove 1 item from the stack
 - Find Expression `TerminateProcess`, and set SWBP there. You can then see what were the function calls before terminate process was called.
 - `cmp eax ebx` does a subtraction of `eax` and `ebx`, while `test eax ebx` does a logical AND between `eax` and `ebx`
+- Set a breakpoint on `GetProcAddress` to see what is getting the address of processes. Could be used for IAT protection using relative addressing.
 
 ## 1. Registers
 
@@ -880,7 +881,16 @@ In the SEH, scroll down and set a Hardware Breakpoint on execution on the `jmp` 
 
 5. Exception Counting. Some packers only run the program after x number of exceptions has been triggered
 
-6. Stack Trace-Back. By looking at what functions were called, we can try to deduce where address the OEP is
+6. Stack Trace-Back. By looking at what functions were called, we can try to deduce where address the OEP is (See PeUpack_b)
+
+After we pass the exception to the SEH, we see another exception being called, and a return address. We trace that address to find the function called before it
+
+![image](https://user-images.githubusercontent.com/7328587/154189715-7be00a18-42d7-474a-87b1-d2e3b49a3003.png)
+
+The highlighted instruction was where we returned to, so we narrow the call to EDI above, which inside checks if there is a debugger present
+
+![image](https://user-images.githubusercontent.com/7328587/154189847-f64b46fb-1e12-4c8f-89c1-3a6be78d7c06.png)
+
 
 ### Packers and Tools being used
 
